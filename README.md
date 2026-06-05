@@ -1,4 +1,4 @@
-# DevPath
+# AI+Backend DevPath
 
 A 6-month AI + Backend Engineer roadmap with:
 
