@@ -1,0 +1,19 @@
+{
+  "name": "DevPath — AI + Backend Journey",
+  "short_name": "DevPath",
+  "description": "6-month AI + Backend Engineer roadmap tracker",
+  "start_url": "/AI-Backend/",
+  "scope": "/AI-Backend/",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#7c6ef7",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='32' fill='%237c6ef7'/><text x='50%' y='58%' font-size='100' text-anchor='middle' dominant-baseline='middle' font-family='serif'>⬡</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
