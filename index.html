@@ -1,10 +1,14 @@
-# AI-Backend
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>AI + Backend Journey</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7c6ef7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="DevPath">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -24,11 +28,15 @@
   --phase1: #7c6ef7;
   --phase2: #38d9a9;
   --phase3: #f9a825;
+  --dsa: #f06595;
+  --sysdesign: #38d9a9;
+  --sqlplus: #60a5fa;
   --danger: #f06595;
   --radius: 12px;
   --radius-sm: 8px;
+  --nav-h: 60px;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html { scroll-behavior: smooth; }
 body {
   background: var(--bg);
@@ -37,123 +45,107 @@ body {
   font-size: 14px;
   line-height: 1.6;
   min-height: 100vh;
+  min-height: 100dvh;
+  overscroll-behavior: none;
 }
-
-/* SCROLLBAR */
-::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-track { background: var(--bg2); }
 ::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 2px; }
 
-/* LAYOUT */
-.app { display: flex; min-height: 100vh; }
-.sidebar {
-  width: 220px;
-  min-width: 220px;
-  background: var(--bg2);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  top: 0; left: 0; bottom: 0;
-  z-index: 100;
+/* ── LAYOUT ── */
+.app { display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; }
+.main {
+  flex: 1;
+  padding: 20px 16px 80px;
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
   overflow-y: auto;
 }
-.main { margin-left: 220px; flex: 1; padding: 32px; max-width: 900px; }
 
-/* SIDEBAR */
-.brand {
-  padding: 24px 20px 16px;
-  border-bottom: 1px solid var(--border);
+/* ── BOTTOM NAV (mobile-first) ── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  display: flex;
+  z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom);
 }
-.brand-name {
-  font-family: 'Syne', sans-serif;
-  font-size: 15px;
-  font-weight: 800;
-  color: var(--text);
-  letter-spacing: -0.3px;
-}
-.brand-sub { font-size: 11px; color: var(--muted); margin-top: 2px; font-family: 'DM Mono', monospace; }
-
-.nav-section { padding: 12px 12px 4px; }
-.nav-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; padding: 0 8px; margin-bottom: 4px; font-family: 'DM Mono', monospace; }
-.nav-item {
-  display: flex; align-items: center; gap: 8px;
-  padding: 7px 8px;
-  border-radius: var(--radius-sm);
+.bn-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
   cursor: pointer;
-  font-size: 13px;
   color: var(--muted);
-  transition: all 0.15s;
-  margin-bottom: 1px;
+  transition: color 0.15s;
+  font-size: 10px;
+  font-family: 'DM Mono', monospace;
+  padding: 8px 0;
+  border: none;
+  background: none;
+  -webkit-appearance: none;
 }
-.nav-item:hover { background: var(--bg3); color: var(--text); }
-.nav-item.active { background: rgba(124,110,247,0.12); color: var(--accent2); }
-.nav-item .ni { font-size: 15px; width: 18px; text-align: center; }
+.bn-item .bni { font-size: 20px; line-height: 1; }
+.bn-item.active { color: var(--accent2); }
+.bn-item:active { opacity: 0.7; }
 
-.progress-card {
-  margin: 12px;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px;
-}
-.pc-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; font-family: 'DM Mono', monospace; }
-.pc-val { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; color: var(--accent2); }
-.pc-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
-.bar-bg { background: var(--bg4); border-radius: 3px; height: 4px; margin-top: 10px; }
-.bar-fill { height: 4px; border-radius: 3px; background: linear-gradient(90deg, var(--phase1), var(--accent2)); transition: width 0.6s ease; }
-
-/* PAGES */
+/* ── PAGES ── */
 .page { display: none; }
 .page.active { display: block; }
 
-/* HEADINGS */
+/* ── TYPOGRAPHY ── */
 .page-title {
   font-family: 'Syne', sans-serif;
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.5px;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
-.page-sub { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
+.page-sub { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
 
-/* CARDS */
+/* ── CARDS ── */
 .card {
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 20px;
-  margin-bottom: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
 }
 .card-sm {
   background: var(--bg3);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 14px 16px;
+  padding: 12px 14px;
 }
 
-/* DASHBOARD */
-.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+/* ── DASHBOARD ── */
+.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
 .stat-card {
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 16px;
+  padding: 12px 10px;
 }
-.stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; font-family: 'DM Mono', monospace; }
-.stat-val { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 700; }
+.stat-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; font-family: 'DM Mono', monospace; }
+.stat-val { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; }
 .stat-val.v1 { color: var(--phase1); }
 .stat-val.v2 { color: var(--phase2); }
-.stat-val.v3 { color: var(--phase4); }
-.stat-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.stat-val.v3 { color: var(--accent4); }
+.stat-sub { font-size: 10px; color: var(--muted); margin-top: 1px; }
 
 .today-card {
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 20px;
-  margin-bottom: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
   position: relative;
   overflow: hidden;
 }
@@ -164,9 +156,9 @@ body {
   height: 2px;
   background: linear-gradient(90deg, var(--phase1), var(--accent2), var(--phase2));
 }
-.today-label { font-size: 11px; color: var(--accent2); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; margin-bottom: 6px; }
-.today-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 4px; }
-.today-meta { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+.today-label { font-size: 10px; color: var(--accent2); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; margin-bottom: 5px; }
+.today-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 3px; }
+.today-meta { font-size: 11px; color: var(--muted); margin-bottom: 12px; }
 
 .task-item {
   display: flex; align-items: flex-start; gap: 10px;
@@ -177,319 +169,269 @@ body {
   margin-bottom: 6px;
   cursor: pointer;
   transition: all 0.15s;
+  min-height: 44px;
 }
-.task-item:hover { border-color: var(--border2); }
 .task-item.done { opacity: 0.5; }
 .task-cb {
-  width: 16px; height: 16px;
+  width: 18px; height: 18px;
   border-radius: 4px;
   border: 1.5px solid var(--border2);
   flex-shrink: 0;
   margin-top: 1px;
   display: flex; align-items: center; justify-content: center;
-  transition: all 0.15s;
-  font-size: 10px;
+  font-size: 11px;
 }
 .task-item.done .task-cb { background: var(--phase2); border-color: var(--phase2); }
-.task-text { font-size: 13px; }
+.task-text { font-size: 13px; line-height: 1.4; }
 .task-item.done .task-text { text-decoration: line-through; color: var(--muted); }
 
-/* ROADMAP */
-.phase-header {
-  display: flex; align-items: center; gap: 12px;
-  margin-bottom: 14px;
+/* ── BADGES ── */
+.badge-dsa {
+  display: inline-block; font-size: 9px; padding: 2px 6px;
+  border-radius: 4px; font-family: 'DM Mono', monospace;
+  background: rgba(240,101,149,0.12); color: var(--dsa);
+  margin-right: 4px;
 }
-.phase-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-.phase-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; }
-.phase-dur { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; margin-left: auto; }
+.badge-sd {
+  display: inline-block; font-size: 9px; padding: 2px 6px;
+  border-radius: 4px; font-family: 'DM Mono', monospace;
+  background: rgba(56,217,169,0.12); color: var(--sysdesign);
+  margin-right: 4px;
+}
+.badge-sql {
+  display: inline-block; font-size: 9px; padding: 2px 6px;
+  border-radius: 4px; font-family: 'DM Mono', monospace;
+  background: rgba(96,165,250,0.12); color: var(--sqlplus);
+  margin-right: 4px;
+}
 
-.month-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+/* ── ROADMAP ── */
+.phase-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.phase-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.phase-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; }
+.phase-dur { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; margin-left: auto; }
+
+.month-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .month-card {
   background: var(--bg3);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 14px;
+  padding: 12px;
   cursor: pointer;
   transition: all 0.15s;
+  min-height: 44px;
 }
-.month-card:hover { border-color: var(--border2); background: var(--bg4); }
-.mc-num { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 4px; }
-.mc-title { font-size: 13px; font-weight: 500; margin-bottom: 8px; }
-.mc-skills { display: flex; flex-wrap: wrap; gap: 4px; }
-.skill-tag {
-  font-size: 10px;
-  padding: 2px 7px;
-  border-radius: 4px;
-  font-family: 'DM Mono', monospace;
-}
+.month-card:active { background: var(--bg4); }
+.mc-num { font-size: 9px; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 3px; }
+.mc-title { font-size: 12px; font-weight: 500; margin-bottom: 7px; }
+.mc-skills { display: flex; flex-wrap: wrap; gap: 3px; }
+.skill-tag { font-size: 9px; padding: 2px 6px; border-radius: 4px; font-family: 'DM Mono', monospace; }
 
-/* SCHEDULE / WEEKS */
-.week-tabs { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+/* ── SCHEDULE ── */
+.scroll-tabs {
+  display: flex; gap: 6px;
+  overflow-x: auto; padding-bottom: 4px;
+  margin-bottom: 12px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.scroll-tabs::-webkit-scrollbar { display: none; }
 .wtab {
-  font-size: 12px;
-  padding: 5px 12px;
-  border-radius: 6px;
+  font-size: 11px; padding: 6px 12px;
+  border-radius: 20px;
   border: 1px solid var(--border);
   background: var(--bg3);
   color: var(--muted);
   cursor: pointer;
   font-family: 'DM Mono', monospace;
-  transition: all 0.15s;
+  white-space: nowrap;
+  min-height: 34px;
+  display: flex; align-items: center;
+  -webkit-appearance: none;
 }
-.wtab:hover { border-color: var(--border2); color: var(--text); }
 .wtab.active { background: rgba(124,110,247,0.15); border-color: var(--accent); color: var(--accent2); }
-
-.week-panel { display: none; }
-.week-panel.active { display: block; }
 
 .day-card {
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 16px;
-  margin-bottom: 10px;
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
+  padding: 14px;
+  margin-bottom: 8px;
 }
-.day-left { width: 52px; flex-shrink: 0; text-align: center; }
-.day-name { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--accent2); }
-.day-num { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; }
-.day-right { flex: 1; }
-.day-topic { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
-.day-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
-.dtag { font-size: 11px; background: var(--bg4); color: var(--muted); padding: 2px 8px; border-radius: 4px; font-family: 'DM Mono', monospace; }
-.day-task { font-size: 12px; color: var(--accent3); font-family: 'DM Mono', monospace; }
-.day-hrs { font-size: 11px; color: var(--muted); margin-left: auto; font-family: 'DM Mono', monospace; white-space: nowrap; flex-shrink: 0; }
+.day-name { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; color: var(--accent2); margin-bottom: 2px; }
+.day-topic { font-size: 14px; font-weight: 500; margin-bottom: 5px; }
+.day-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+.dtag { font-size: 10px; background: var(--bg4); color: var(--muted); padding: 2px 7px; border-radius: 4px; font-family: 'DM Mono', monospace; }
+.day-task { font-size: 11px; color: var(--accent3); font-family: 'DM Mono', monospace; margin-bottom: 6px; }
+.day-hrs { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; }
 
-/* JOURNAL */
-.journal-controls {
-  display: flex; gap: 10px;
-  margin-bottom: 16px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.journal-date-input {
-  background: var(--bg2);
+.extra-box {
+  background: var(--bg3);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  color: var(--text);
-  padding: 7px 12px;
-  font-size: 13px;
-  font-family: 'DM Sans', sans-serif;
-  outline: none;
+  padding: 10px 12px;
+  margin-top: 6px;
 }
-.journal-date-input:focus { border-color: var(--accent); }
-.btn {
-  padding: 7px 16px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border2);
-  background: var(--bg3);
-  color: var(--text);
-  font-size: 13px;
-  font-family: 'DM Sans', sans-serif;
-  cursor: pointer;
-  transition: all 0.15s;
+.extra-box-title {
+  font-size: 10px; font-family: 'DM Mono', monospace;
+  margin-bottom: 5px; font-weight: 600;
 }
-.btn:hover { background: var(--bg4); }
-.btn-accent {
-  background: rgba(124,110,247,0.15);
-  border-color: var(--accent);
-  color: var(--accent2);
+.extra-item {
+  font-size: 11px; color: var(--muted);
+  margin-bottom: 3px; padding-left: 10px;
+  position: relative;
 }
-.btn-accent:hover { background: rgba(124,110,247,0.25); }
-.btn-danger { border-color: rgba(240,101,149,0.4); color: var(--danger); }
-.btn-danger:hover { background: rgba(240,101,149,0.1); }
+.extra-item::before { content: '→'; position: absolute; left: 0; color: var(--accent); }
 
+/* ── JOURNAL ── */
 .journal-editor {
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 .editor-toolbar {
-  display: flex; gap: 6px;
+  display: flex; gap: 6px; align-items: center;
   padding: 10px 14px;
   border-bottom: 1px solid var(--border);
   background: var(--bg3);
   flex-wrap: wrap;
 }
-.etb { font-size: 12px; padding: 3px 10px; border-radius: 4px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; font-family: 'DM Mono', monospace; transition: all 0.15s; }
-.etb:hover { background: var(--bg4); color: var(--text); }
-.mood-row { display: flex; gap: 6px; align-items: center; margin-left: auto; }
-.mood-btn { font-size: 16px; background: none; border: 1px solid var(--border); border-radius: 6px; padding: 2px 7px; cursor: pointer; transition: all 0.15s; }
-.mood-btn:hover { border-color: var(--border2); background: var(--bg4); }
+.mood-row { display: flex; gap: 4px; align-items: center; }
+.mood-btn {
+  font-size: 18px; background: none;
+  border: 1px solid var(--border); border-radius: 6px;
+  padding: 3px 7px; cursor: pointer;
+  min-width: 36px; min-height: 36px;
+  display: flex; align-items: center; justify-content: center;
+}
 .mood-btn.selected { border-color: var(--accent); background: rgba(124,110,247,0.15); }
 textarea.journal-text {
-  width: 100%;
-  min-height: 180px;
-  background: transparent;
-  border: none;
-  color: var(--text);
-  font-size: 14px;
+  width: 100%; min-height: 140px;
+  background: transparent; border: none;
+  color: var(--text); font-size: 14px;
   font-family: 'DM Sans', sans-serif;
-  line-height: 1.7;
-  padding: 16px;
-  resize: vertical;
-  outline: none;
+  line-height: 1.7; padding: 14px;
+  resize: vertical; outline: none;
 }
-.journal-meta { padding: 10px 14px; border-top: 1px solid var(--border); display: flex; gap: 10px; align-items: center; }
+.journal-meta { padding: 10px 14px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
 .meta-field { flex: 1; }
-.meta-label { font-size: 10px; color: var(--muted); margin-bottom: 3px; font-family: 'DM Mono', monospace; text-transform: uppercase; }
+.meta-label { font-size: 9px; color: var(--muted); margin-bottom: 3px; font-family: 'DM Mono', monospace; text-transform: uppercase; }
 .meta-input {
-  width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px;
-  color: var(--text); font-size: 12px; padding: 5px 8px; font-family: 'DM Mono', monospace; outline: none;
+  width: 100%; background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 6px; color: var(--text); font-size: 12px;
+  padding: 6px 8px; font-family: 'DM Mono', monospace; outline: none;
+  -webkit-appearance: none;
 }
 .meta-input:focus { border-color: var(--accent); }
 
-.entries-list { margin-top: 8px; }
-.entry-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  transition: all 0.15s;
+.btn {
+  padding: 10px 16px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border2); background: var(--bg3);
+  color: var(--text); font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer; min-height: 44px;
+  -webkit-appearance: none;
 }
-.entry-card:hover { border-color: var(--border2); }
-.ec-top { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-.ec-date { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
-.ec-mood { font-size: 14px; }
-.ec-topic { font-size: 11px; background: rgba(124,110,247,0.12); color: var(--accent2); padding: 1px 7px; border-radius: 4px; font-family: 'DM Mono', monospace; }
-.ec-preview { font-size: 13px; color: var(--muted); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-.ec-del { margin-left: auto; opacity: 0; transition: opacity 0.15s; background: none; border: none; color: var(--danger); font-size: 14px; cursor: pointer; padding: 2px 6px; }
-.entry-card:hover .ec-del { opacity: 1; }
+.btn-accent { background: rgba(124,110,247,0.15); border-color: var(--accent); color: var(--accent2); }
+.btn-danger { border-color: rgba(240,101,149,0.4); color: var(--danger); }
 
-/* RESOURCES */
-.res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.res-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px;
+.entry-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px; margin-bottom: 8px;
+  cursor: pointer;
 }
-.res-phase { font-size: 10px; font-family: 'DM Mono', monospace; margin-bottom: 6px; }
-.res-name { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+.ec-top { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; flex-wrap: wrap; }
+.ec-date { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; }
+.ec-mood { font-size: 14px; }
+.ec-topic { font-size: 10px; background: rgba(124,110,247,0.12); color: var(--accent2); padding: 1px 6px; border-radius: 4px; font-family: 'DM Mono', monospace; }
+.ec-preview { font-size: 12px; color: var(--muted); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+
+/* ── RESOURCES ── */
+.res-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 13px; margin-bottom: 8px;
+  cursor: pointer;
+}
+.res-name { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
 .res-type { font-size: 11px; color: var(--muted); }
-.badge { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 4px; font-family: 'DM Mono', monospace; }
+.badge { display: inline-block; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-family: 'DM Mono', monospace; }
 .free { background: rgba(56,217,169,0.1); color: var(--accent3); }
 .paid { background: rgba(249,168,37,0.1); color: var(--accent4); }
 
-/* STREAK */
-.streak-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 10px; }
-.sg-day { width: 100%; aspect-ratio: 1; border-radius: 3px; background: var(--bg4); transition: all 0.2s; }
+/* ── STREAK ── */
+.streak-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin-top: 8px; }
+.sg-day { width: 100%; aspect-ratio: 1; border-radius: 3px; background: var(--bg4); }
 .sg-day.done { background: var(--phase2); }
 .sg-day.today { background: var(--accent); }
-.sg-labels { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px; }
+.sg-labels { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin-bottom: 3px; }
 .sg-label { font-size: 9px; color: var(--muted); text-align: center; font-family: 'DM Mono', monospace; }
 
-/* MODAL */
+/* ── BAR ── */
+.bar-bg { background: var(--bg4); border-radius: 3px; height: 4px; margin-top: 8px; }
+.bar-fill { height: 4px; border-radius: 3px; background: linear-gradient(90deg, var(--phase1), var(--accent2)); transition: width 0.6s ease; }
+
+/* ── MODAL ── */
 .modal-overlay {
   position: fixed; inset: 0;
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(4px);
-  z-index: 1000;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(6px);
+  z-index: 1000; display: none;
+  align-items: flex-end; justify-content: center;
+  padding: 0;
 }
 .modal-overlay.open { display: flex; }
 .modal {
   background: var(--bg2);
   border: 1px solid var(--border2);
-  border-radius: 16px;
-  padding: 24px;
-  max-width: 540px;
-  width: 100%;
-  max-height: 80vh;
+  border-radius: 20px 20px 0 0;
+  padding: 20px 20px calc(20px + env(safe-area-inset-bottom));
+  width: 100%; max-height: 80vh;
   overflow-y: auto;
 }
-.modal-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 4px; }
-.modal-sub { font-size: 12px; color: var(--muted); margin-bottom: 16px; font-family: 'DM Mono', monospace; }
+.modal-handle { width: 36px; height: 4px; background: var(--bg4); border-radius: 2px; margin: 0 auto 16px; }
+.modal-title { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; margin-bottom: 3px; }
+.modal-sub { font-size: 11px; color: var(--muted); margin-bottom: 14px; font-family: 'DM Mono', monospace; }
 
-/* NOTIFICATION */
+/* ── TOAST ── */
 .toast {
-  position: fixed; bottom: 24px; right: 24px;
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-  padding: 12px 16px;
-  font-size: 13px;
-  z-index: 2000;
-  transform: translateY(80px);
-  opacity: 0;
-  transition: all 0.3s ease;
+  position: fixed; bottom: calc(var(--nav-h) + 12px); left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 20px; padding: 10px 18px;
+  font-size: 13px; z-index: 2000;
+  opacity: 0; transition: all 0.25s ease;
+  white-space: nowrap;
 }
-.toast.show { transform: translateY(0); opacity: 1; }
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 .toast.green { border-color: rgba(56,217,169,0.4); color: var(--accent3); }
 
-/* DIVIDER */
-.divider { height: 1px; background: var(--border); margin: 20px 0; }
+.divider { height: 1px; background: var(--border); margin: 16px 0; }
 
-/* RESPONSIVE */
-@media (max-width: 700px) {
-  .sidebar { width: 60px; min-width: 60px; }
-  .sidebar .brand-name, .sidebar .brand-sub, .sidebar .nav-label, .sidebar .nav-item span, .progress-card .pc-label, .progress-card .pc-sub { display: none; }
-  .main { margin-left: 60px; padding: 16px; }
-  .stats-row { grid-template-columns: 1fr; }
-  .month-grid { grid-template-columns: 1fr; }
-  .res-grid { grid-template-columns: 1fr; }
+/* ── DSA PROGRESS CARD ── */
+.dsa-progress-card {
+  background: var(--bg2);
+  border: 1px solid rgba(240,101,149,0.2);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 12px;
+}
+.sysdesign-card {
+  background: var(--bg2);
+  border: 1px solid rgba(56,217,169,0.2);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 12px;
+}
+.progress-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px; font-weight: 800;
 }
 </style>
 </head>
 <body>
 <div class="app">
-
-<!-- SIDEBAR -->
-<div class="sidebar">
-  <div class="brand">
-    <div class="brand-name">devpath</div>
-    <div class="brand-sub">AI + Backend · 6mo</div>
-  </div>
-
-  <div class="nav-section">
-    <div class="nav-label">overview</div>
-    <div class="nav-item active" onclick="nav('dashboard',this)">
-      <span class="ni">◈</span><span>Dashboard</span>
-    </div>
-    <div class="nav-item" onclick="nav('roadmap',this)">
-      <span class="ni">◉</span><span>Roadmap</span>
-    </div>
-  </div>
-
-  <div class="nav-section">
-    <div class="nav-label">daily</div>
-    <div class="nav-item" onclick="nav('schedule',this)">
-      <span class="ni">▦</span><span>Schedule</span>
-    </div>
-    <div class="nav-item" onclick="nav('journal',this)">
-      <span class="ni">✎</span><span>Journal</span>
-    </div>
-  </div>
-
-  <div class="nav-section">
-    <div class="nav-label">learn</div>
-    <div class="nav-item" onclick="nav('resources',this)">
-      <span class="ni">⊞</span><span>Resources</span>
-    </div>
-    <div class="nav-item" onclick="nav('streak',this)">
-      <span class="ni">◌</span><span>Streak</span>
-    </div>
-  </div>
-
-  <div style="flex:1"></div>
-  <div class="progress-card">
-    <div class="pc-label">overall progress</div>
-    <div class="pc-val" id="overall-pct">0%</div>
-    <div class="pc-sub" id="overall-days">0 / 180 days</div>
-    <div class="bar-bg"><div class="bar-fill" id="overall-bar" style="width:0%"></div></div>
-  </div>
-</div>
-
-<!-- MAIN -->
 <div class="main">
 
 <!-- DASHBOARD -->
@@ -499,19 +441,19 @@ textarea.journal-text {
 
   <div class="stats-row">
     <div class="stat-card">
-      <div class="stat-label">current phase</div>
+      <div class="stat-label">phase</div>
       <div class="stat-val v1" id="stat-phase">—</div>
       <div class="stat-sub" id="stat-phase-name">—</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">journal entries</div>
-      <div class="stat-val v2" id="stat-entries">0</div>
-      <div class="stat-sub">notes written</div>
+      <div class="stat-label">streak</div>
+      <div class="stat-val v3" id="stat-streak">0</div>
+      <div class="stat-sub">days</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">day streak</div>
-      <div class="stat-val" style="color:var(--accent4)" id="stat-streak">0</div>
-      <div class="stat-sub">days in a row</div>
+      <div class="stat-label">entries</div>
+      <div class="stat-val v2" id="stat-entries">0</div>
+      <div class="stat-sub">logged</div>
     </div>
   </div>
 
@@ -520,13 +462,54 @@ textarea.journal-text {
     <div class="today-title" id="today-topic">Loading...</div>
     <div class="today-meta" id="today-meta">—</div>
     <div id="today-tasks"></div>
-    <div style="margin-top:12px">
-      <button class="btn btn-accent" onclick="nav('journal', document.querySelector('.nav-item:nth-child(4)'))">+ Write journal entry</button>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-accent" onclick="nav('journal')">+ Journal entry</button>
+      <button class="btn" onclick="markToday()" style="font-size:12px;">✓ Mark streak</button>
+    </div>
+  </div>
+
+  <!-- DSA + System Design progress -->
+  <div class="dsa-progress-card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+      <span class="badge-dsa">🧩 DSA</span>
+      <span style="font-size:12px;color:var(--muted);">LeetCode Problems</span>
+      <span style="margin-left:auto;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;">target: 150+</span>
+    </div>
+    <div style="display:flex;align-items:baseline;gap:6px;">
+      <div class="progress-num" id="dsa-count" style="color:var(--dsa);">0</div>
+      <div style="font-size:12px;color:var(--muted);">problems solved</div>
+    </div>
+    <div style="height:4px;background:var(--bg4);border-radius:3px;margin-top:8px;">
+      <div id="dsa-bar" style="height:4px;border-radius:3px;background:var(--dsa);width:0%;transition:width 0.5s;"></div>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:6px;">
+      <button class="btn" style="font-size:11px;padding:6px 12px;min-height:36px;" onclick="logDSA(-1)">−1</button>
+      <button class="btn btn-accent" style="font-size:11px;padding:6px 12px;min-height:36px;" onclick="logDSA(1)">+ Solved one</button>
+      <a href="https://neetcode.io" target="_blank" style="margin-left:auto;" class="btn" style="font-size:11px;padding:6px 12px;min-height:36px;">NeetCode ↗</a>
+    </div>
+  </div>
+
+  <div class="sysdesign-card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+      <span class="badge-sd">📐 System Design</span>
+      <span style="margin-left:auto;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;">target: 10+</span>
+    </div>
+    <div style="display:flex;align-items:baseline;gap:6px;">
+      <div class="progress-num" id="sd-count" style="color:var(--sysdesign);">0</div>
+      <div style="font-size:12px;color:var(--muted);">systems designed</div>
+    </div>
+    <div style="height:4px;background:var(--bg4);border-radius:3px;margin-top:8px;">
+      <div id="sd-bar" style="height:4px;border-radius:3px;background:var(--sysdesign);width:0%;transition:width 0.5s;"></div>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:6px;">
+      <button class="btn" style="font-size:11px;padding:6px 12px;min-height:36px;" onclick="logSD(-1)">−1</button>
+      <button class="btn btn-accent" style="font-size:11px;padding:6px 12px;min-height:36px;" onclick="logSD(1)">+ Done one</button>
+      <a href="https://github.com/donnemartin/system-design-primer" target="_blank" class="btn" style="font-size:11px;padding:6px 12px;min-height:36px;margin-left:auto;">Primer ↗</a>
     </div>
   </div>
 
   <div class="card">
-    <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:12px;">6-month overview</div>
+    <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:10px;">6-month overview</div>
     <div id="phase-overview"></div>
   </div>
 </div>
@@ -534,790 +517,29 @@ textarea.journal-text {
 <!-- ROADMAP -->
 <div class="page" id="page-roadmap">
   <div class="page-title">Your Roadmap</div>
-  <div class="page-sub">BCA 2nd year → AI + Backend Engineer · 6 months · ~2hrs/day</div>
-
+  <div class="page-sub">BCA 2nd year → AI + Backend · 6 months</div>
+  <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;">
+    <span class="badge-dsa">🧩 DSA daily</span>
+    <span class="badge-sd">📐 System Design</span>
+    <span class="badge-sql">🗄️ SQL+</span>
+  </div>
   <div id="roadmap-content"></div>
 </div>
 
 <!-- SCHEDULE -->
 <div class="page" id="page-schedule">
   <div class="page-title">Daily Schedule</div>
-  <div class="page-sub">Every day mapped out · click a phase to explore</div>
-
-  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;" id="phase-tabs"></div>
-  <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;" id="month-tabs"></div>
-  <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;" class="week-tabs" id="week-tabs"></div>
+  <div class="page-sub">Every day mapped out</div>
+  <div class="scroll-tabs" id="phase-tabs"></div>
+  <div class="scroll-tabs" id="month-tabs"></div>
+  <div class="scroll-tabs" id="week-tabs"></div>
   <div id="schedule-content"></div>
 </div>
 
 <!-- JOURNAL -->
 <div class="page" id="page-journal">
   <div class="page-title">Journal</div>
-  <div class="page-sub">Track your progress, struggles and wins</div>
-
+  <div class="page-sub">Track progress, struggles and wins</div>
   <div class="journal-editor">
     <div class="editor-toolbar">
-      <span style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-right:4px;">new entry</span>
-      <input type="date" class="journal-date-input" id="entry-date" style="padding:3px 8px;font-size:11px;">
-      <div class="mood-row">
-        <span style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;">mood:</span>
-        <button class="mood-btn" data-mood="😄" onclick="setMood(this)">😄</button>
-        <button class="mood-btn" data-mood="🙂" onclick="setMood(this)">🙂</button>
-        <button class="mood-btn" data-mood="😐" onclick="setMood(this)">😐</button>
-        <button class="mood-btn" data-mood="😤" onclick="setMood(this)">😤</button>
-        <button class="mood-btn" data-mood="😴" onclick="setMood(this)">😴</button>
-      </div>
-    </div>
-    <textarea class="journal-text" id="journal-text" placeholder="What did you learn today? What was hard? What clicked? Write freely..."></textarea>
-    <div class="journal-meta">
-      <div class="meta-field">
-        <div class="meta-label">topic / subject</div>
-        <input class="meta-input" id="entry-topic" placeholder="e.g. Python OOP, FastAPI...">
-      </div>
-      <div class="meta-field">
-        <div class="meta-label">hours studied</div>
-        <input class="meta-input" id="entry-hours" type="number" min="0" max="12" step="0.5" placeholder="1.5">
-      </div>
-    </div>
-  </div>
-  <div style="display:flex;gap:8px;margin-bottom:20px;">
-    <button class="btn btn-accent" onclick="saveEntry()">Save entry</button>
-    <button class="btn" onclick="clearEditor()">Clear</button>
-  </div>
-
-  <div class="divider"></div>
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-    <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;">Past entries</div>
-    <input type="text" class="meta-input" id="search-entries" placeholder="search entries..." style="width:180px;" oninput="renderEntries()">
-  </div>
-  <div class="entries-list" id="entries-list"></div>
-</div>
-
-<!-- RESOURCES -->
-<div class="page" id="page-resources">
-  <div class="page-title">Resources</div>
-  <div class="page-sub">Everything you need, phase by phase</div>
-  <div id="resources-content"></div>
-</div>
-
-<!-- STREAK -->
-<div class="page" id="page-streak">
-  <div class="page-title">Study Streak</div>
-  <div class="page-sub">Mark each day you study — build the habit</div>
-
-  <div class="card">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-      <div>
-        <div style="font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:var(--accent4);" id="streak-num">0</div>
-        <div style="font-size:12px;color:var(--muted);">day streak</div>
-      </div>
-      <button class="btn btn-accent" onclick="markToday()">✓ Mark today done</button>
-    </div>
-    <div class="sg-labels">
-      <div class="sg-label">M</div><div class="sg-label">T</div><div class="sg-label">W</div>
-      <div class="sg-label">T</div><div class="sg-label">F</div><div class="sg-label">S</div><div class="sg-label">S</div>
-    </div>
-    <div class="streak-grid" id="streak-grid"></div>
-    <div style="margin-top:12px;display:flex;gap:8px;align-items:center;">
-      <div style="width:10px;height:10px;border-radius:2px;background:var(--bg4);"></div><span style="font-size:11px;color:var(--muted);">not studied</span>
-      <div style="width:10px;height:10px;border-radius:2px;background:var(--phase2);margin-left:12px;"></div><span style="font-size:11px;color:var(--muted);">studied</span>
-      <div style="width:10px;height:10px;border-radius:2px;background:var(--accent);margin-left:12px;"></div><span style="font-size:11px;color:var(--muted);">today</span>
-    </div>
-  </div>
-
-  <div class="card">
-    <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:4px;">Total study hours</div>
-    <div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--phase2);" id="total-hours">0h</div>
-    <div style="font-size:12px;color:var(--muted);">logged from journal entries</div>
-  </div>
-</div>
-
-</div><!-- end main -->
-</div><!-- end app -->
-
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
-
-<!-- MODAL (entry view) -->
-<div class="modal-overlay" id="modal" onclick="closeModal(event)">
-  <div class="modal" id="modal-inner">
-    <div class="modal-title" id="modal-title"></div>
-    <div class="modal-sub" id="modal-sub"></div>
-    <div id="modal-body" style="font-size:14px;line-height:1.8;white-space:pre-wrap;color:var(--text);"></div>
-    <div style="margin-top:16px;display:flex;gap:8px;">
-      <button class="btn" onclick="document.getElementById('modal').classList.remove('open')">Close</button>
-      <button class="btn btn-danger" id="modal-del-btn">Delete entry</button>
-    </div>
-  </div>
-</div>
-
-<script>
-// ===================== DATA =====================
-const ROADMAP = [
-  {
-    phase: 1, color: '#7c6ef7', label: 'Phase 1 — Foundation',
-    duration: 'Month 1–2 · Python & Web basics',
-    months: [
-      {
-        num: 1, title: 'Python fundamentals', color: '#7c6ef7',
-        skills: ['Variables','Loops','Functions','OOP','Git'],
-        weeks: [
-          {
-            week: 1, title: 'Python basics',
-            days: [
-              { day:'Mon', topic:'Setup & Python basics', tags:['install','variables','data types'], task:'Print name, age, city using variables', hrs:'1.5h' },
-              { day:'Tue', topic:'Operators & input', tags:['operators','input()','type casting'], task:'Build a simple calculator', hrs:'1.5h' },
-              { day:'Wed', topic:'Conditionals', tags:['if/elif/else','comparison'], task:'Grade checker: marks → A/B/C/Fail', hrs:'1.5h' },
-              { day:'Thu', topic:'Loops', tags:['for','while','break','range()'], task:'Print multiplication table for any number', hrs:'2h' },
-              { day:'Fri', topic:'Strings', tags:['string methods','slicing','f-strings'], task:'Name formatter: reverse, uppercase, count vowels', hrs:'2h' },
-              { day:'Sat', topic:'Lists & tuples', tags:['list methods','indexing','comprehension'], task:'Store 5 student names, sort and print them', hrs:'2h' },
-              { day:'Sun', topic:'Revise + mini project', tags:['review'], task:'Number guessing game using loops + conditionals', hrs:'2h' },
-            ]
-          },
-          {
-            week: 2, title: 'Functions & files',
-            days: [
-              { day:'Mon', topic:'Dicts & sets', tags:['dict CRUD','nested','sets'], task:'Student report using dict', hrs:'1.5h' },
-              { day:'Tue', topic:'Functions basics', tags:['def','return','parameters'], task:'Refactor calculator into functions', hrs:'2h' },
-              { day:'Wed', topic:'Functions advanced', tags:['*args','**kwargs','lambda'], task:'Filter even numbers using lambda', hrs:'2h' },
-              { day:'Thu', topic:'Modules & imports', tags:['import','math','random','pip'], task:'Dice roller app using random module', hrs:'1.5h' },
-              { day:'Fri', topic:'File handling', tags:['open','read/write','CSV'], task:'Save student marks to .txt, read & display', hrs:'2h' },
-              { day:'Sat', topic:'Error handling', tags:['try/except','finally','raise'], task:'Add error handling to calculator', hrs:'1.5h' },
-              { day:'Sun', topic:'Mini project', tags:['project'], task:'Contact book CLI: add, view, save to file', hrs:'2h' },
-            ]
-          },
-          {
-            week: 3, title: 'OOP & Git',
-            days: [
-              { day:'Mon', topic:'OOP — classes', tags:['class','__init__','attributes'], task:'Student class with name, marks, get_grade()', hrs:'2h' },
-              { day:'Tue', topic:'OOP — inheritance', tags:['inheritance','super()','override'], task:'GraduateStudent extends Student', hrs:'2h' },
-              { day:'Wed', topic:'OOP — special methods', tags:['__str__','encapsulation'], task:'Add __str__ to Student class', hrs:'2h' },
-              { day:'Thu', topic:'Git & GitHub', tags:['git init','commit','push','README'], task:'Push contact book to GitHub', hrs:'2h' },
-              { day:'Fri', topic:'JSON', tags:['json module','read/write JSON'], task:'Save contact book as JSON', hrs:'1.5h' },
-              { day:'Sat', topic:'Virtual environments', tags:['venv','requirements.txt'], task:'Set up venv, export requirements.txt', hrs:'1.5h' },
-              { day:'Sun', topic:'Refactor + push', tags:['review','OOP+Git'], task:'Rewrite contact book with OOP + JSON, push to GitHub', hrs:'2h' },
-            ]
-          },
-          {
-            week: 4, title: 'SQL + APIs + Final Project',
-            days: [
-              { day:'Mon', topic:'SQL basics', tags:['SELECT','INSERT','SQLite'], task:'Create students table, run basic queries in Python', hrs:'2h' },
-              { day:'Tue', topic:'SQL — joins & aggregates', tags:['JOIN','GROUP BY','COUNT'], task:'Query average marks by class', hrs:'2h' },
-              { day:'Wed', topic:'HTTP & APIs', tags:['requests','GET/POST','JSON'], task:'Fetch weather from a free public API', hrs:'2h' },
-              { day:'Thu', topic:'Project planning', tags:['architecture','plan'], task:'Plan Month 1 final project structure', hrs:'1.5h' },
-              { day:'Fri', topic:'Build project pt.1', tags:['scaffold','classes','DB'], task:'Set up project structure, classes, DB', hrs:'2h' },
-              { day:'Sat', topic:'Build project pt.2', tags:['features','error handling'], task:'Complete core features, add error handling', hrs:'2h' },
-              { day:'Sun', topic:'Polish & push', tags:['README','clean code'], task:'Write README, clean code, push to GitHub', hrs:'2h' },
-            ]
-          }
-        ]
-      },
-      {
-        num: 2, title: 'Advanced Python & CS fundamentals', color: '#7c6ef7',
-        skills: ['Data Structures','Algorithms','Testing','pip packages','Regex'],
-        weeks: [
-          { week:1, title:'Data structures', days:[
-            {day:'Mon',topic:'Stacks & queues',tags:['stack','queue','deque'],task:'Implement stack using list, solve balanced brackets problem',hrs:'2h'},
-            {day:'Tue',topic:'Linked lists',tags:['nodes','pointers','traversal'],task:'Build a simple singly linked list class',hrs:'2h'},
-            {day:'Wed',topic:'Hash maps & sets',tags:['dict internals','collision'],task:'Count word frequencies in a paragraph',hrs:'1.5h'},
-            {day:'Thu',topic:'Trees basics',tags:['BST','traversal'],task:'Build a binary search tree with insert & search',hrs:'2h'},
-            {day:'Fri',topic:'Sorting algorithms',tags:['bubble','merge','quick'],task:'Implement and compare bubble vs merge sort',hrs:'2h'},
-            {day:'Sat',topic:'Searching',tags:['binary search','linear search'],task:'Implement binary search on sorted list',hrs:'1.5h'},
-            {day:'Sun',topic:'Problem solving',tags:['practice','LeetCode easy'],task:'Solve 3 easy LeetCode problems (arrays)',hrs:'2h'},
-          ]},
-          { week:2, title:'Unit testing & debugging', days:[
-            {day:'Mon',topic:'pytest basics',tags:['pytest','test cases','assert'],task:'Write tests for your Student class',hrs:'2h'},
-            {day:'Tue',topic:'Mocking & fixtures',tags:['mock','fixtures','coverage'],task:'Add fixtures and coverage to your test suite',hrs:'2h'},
-            {day:'Wed',topic:'Debugging tools',tags:['pdb','logging','breakpoints'],task:'Debug a broken script using pdb',hrs:'1.5h'},
-            {day:'Thu',topic:'Regex',tags:['re module','patterns','groups'],task:'Validate email and phone number using regex',hrs:'1.5h'},
-            {day:'Fri',topic:'Decorators',tags:['@decorator','functools','wraps'],task:'Build a timer decorator and a login_required decorator',hrs:'2h'},
-            {day:'Sat',topic:'Generators & iterators',tags:['yield','__iter__','lazy eval'],task:'Build a file line reader using generators',hrs:'2h'},
-            {day:'Sun',topic:'Mini project',tags:['project'],task:'Build a tested CLI tool with logging (e.g. URL checker)',hrs:'2h'},
-          ]},
-          { week:3, title:'Async Python', days:[
-            {day:'Mon',topic:'Concurrency basics',tags:['threading','GIL','processes'],task:'Compare thread vs process for CPU vs IO tasks',hrs:'2h'},
-            {day:'Tue',topic:'asyncio basics',tags:['async/await','event loop'],task:'Build an async web scraper using aiohttp',hrs:'2h'},
-            {day:'Wed',topic:'aiohttp & httpx',tags:['async HTTP','sessions','timeout'],task:'Fetch 5 APIs concurrently using asyncio',hrs:'2h'},
-            {day:'Thu',topic:'Multiprocessing',tags:['Pool','ProcessPoolExecutor'],task:'Parallelise a CPU-heavy task using multiprocessing',hrs:'1.5h'},
-            {day:'Fri',topic:'Caching strategies',tags:['functools.cache','Redis intro'],task:'Add memoisation to a recursive function',hrs:'1.5h'},
-            {day:'Sat',topic:'Type hints & mypy',tags:['typing','mypy','annotations'],task:'Add full type hints to contact book project',hrs:'2h'},
-            {day:'Sun',topic:'Revise + LeetCode',tags:['review','practice'],task:'Solve 3 medium LeetCode problems',hrs:'2h'},
-          ]},
-          { week:4, title:'Month 2 final project', days:[
-            {day:'Mon',topic:'Plan scraper project',tags:['architecture','async'],task:'Plan a multi-source async web scraper with tests',hrs:'1.5h'},
-            {day:'Tue',topic:'Build pt.1',tags:['async fetching'],task:'Build async fetchers for 3 sources',hrs:'2h'},
-            {day:'Wed',topic:'Build pt.2',tags:['parsing','storage'],task:'Parse data and store in SQLite',hrs:'2h'},
-            {day:'Thu',topic:'Build pt.3',tags:['tests','logging'],task:'Add pytest suite and logging',hrs:'2h'},
-            {day:'Fri',topic:'Build pt.4',tags:['CLI','argparse'],task:'Add CLI with argparse (choose source, output format)',hrs:'2h'},
-            {day:'Sat',topic:'Polish & document',tags:['README','docstrings'],task:'Write full README and docstrings',hrs:'1.5h'},
-            {day:'Sun',topic:'Push & reflect',tags:['GitHub','journal'],task:'Push to GitHub, write journal entry reviewing Month 2',hrs:'1.5h'},
-          ]},
-        ]
-      }
-    ]
-  },
-  {
-    phase: 2, color: '#38d9a9', label: 'Phase 2 — Backend',
-    duration: 'Month 3–4 · APIs, databases & deployment',
-    months: [
-      {
-        num: 3, title: 'Backend with FastAPI', color: '#38d9a9',
-        skills: ['FastAPI','REST APIs','PostgreSQL','Auth','Docker'],
-        weeks: [
-          { week:1, title:'FastAPI basics', days:[
-            {day:'Mon',topic:'FastAPI intro',tags:['FastAPI','Uvicorn','Swagger'],task:'Set up FastAPI project, create /hello endpoint',hrs:'2h'},
-            {day:'Tue',topic:'Path & query params',tags:['path params','query params','validation'],task:'Build /items/{id} endpoint with query filtering',hrs:'2h'},
-            {day:'Wed',topic:'Request body & Pydantic',tags:['BaseModel','validation','schemas'],task:'Create POST /users endpoint with Pydantic model',hrs:'2h'},
-            {day:'Thu',topic:'CRUD endpoints',tags:['GET','POST','PUT','DELETE'],task:'Build full CRUD for a "tasks" resource',hrs:'2h'},
-            {day:'Fri',topic:'Error handling & responses',tags:['HTTPException','status codes'],task:'Add proper error responses to all endpoints',hrs:'1.5h'},
-            {day:'Sat',topic:'Middleware & CORS',tags:['CORS','middleware','headers'],task:'Add CORS and a request logging middleware',hrs:'1.5h'},
-            {day:'Sun',topic:'Mini project',tags:['project'],task:'Build a notes API with full CRUD and proper errors',hrs:'2h'},
-          ]},
-          { week:2, title:'PostgreSQL & SQLAlchemy', days:[
-            {day:'Mon',topic:'PostgreSQL setup',tags:['psql','create DB','pgAdmin'],task:'Set up local PostgreSQL, create tables for notes app',hrs:'2h'},
-            {day:'Tue',topic:'SQLAlchemy ORM',tags:['models','session','engine'],task:'Connect FastAPI to PostgreSQL via SQLAlchemy',hrs:'2h'},
-            {day:'Wed',topic:'CRUD with DB',tags:['db CRUD','relationships'],task:'Replace in-memory CRUD with real DB operations',hrs:'2h'},
-            {day:'Thu',topic:'Alembic migrations',tags:['alembic','migrations','versioning'],task:'Set up Alembic and run first migration',hrs:'1.5h'},
-            {day:'Fri',topic:'Relationships',tags:['one-to-many','foreign keys','joins'],task:'Add User model, relate Notes to Users',hrs:'2h'},
-            {day:'Sat',topic:'Advanced queries',tags:['filter','order','paginate'],task:'Add pagination and filtering to notes list endpoint',hrs:'2h'},
-            {day:'Sun',topic:'Revise & test',tags:['review','Postman'],task:'Test all endpoints in Postman, fix any bugs',hrs:'2h'},
-          ]},
-          { week:3, title:'Authentication & security', days:[
-            {day:'Mon',topic:'Password hashing',tags:['bcrypt','passlib','hashing'],task:'Add password hashing to user registration',hrs:'2h'},
-            {day:'Tue',topic:'JWT auth',tags:['JWT','python-jose','tokens'],task:'Implement login endpoint returning JWT token',hrs:'2h'},
-            {day:'Wed',topic:'Protected routes',tags:['Depends','OAuth2','bearer'],task:'Protect notes endpoints — only owner can access',hrs:'2h'},
-            {day:'Thu',topic:'Refresh tokens',tags:['refresh','access','expiry'],task:'Implement access + refresh token rotation',hrs:'2h'},
-            {day:'Fri',topic:'Rate limiting',tags:['slowapi','rate limits'],task:'Add rate limiting to login endpoint',hrs:'1.5h'},
-            {day:'Sat',topic:'Environment variables',tags:['.env','python-dotenv','secrets'],task:'Move all secrets to .env, never hardcode',hrs:'1h'},
-            {day:'Sun',topic:'Auth review + project',tags:['review'],task:'Full auth flow working end-to-end in notes API',hrs:'2h'},
-          ]},
-          { week:4, title:'Docker & deployment', days:[
-            {day:'Mon',topic:'Docker intro',tags:['Dockerfile','images','containers'],task:'Write Dockerfile for FastAPI app',hrs:'2h'},
-            {day:'Tue',topic:'Docker Compose',tags:['docker-compose','services','volumes'],task:'Compose FastAPI + PostgreSQL together',hrs:'2h'},
-            {day:'Wed',topic:'Deploy to Render/Railway',tags:['cloud deploy','env vars'],task:'Deploy FastAPI app to Render (free tier)',hrs:'2h'},
-            {day:'Thu',topic:'CI/CD basics',tags:['GitHub Actions','lint','test'],task:'Add GitHub Action to run tests on push',hrs:'2h'},
-            {day:'Fri',topic:'API testing with pytest',tags:['TestClient','fixtures','async'],task:'Write integration tests for all API endpoints',hrs:'2h'},
-            {day:'Sat',topic:'Documentation',tags:['OpenAPI','docstrings','README'],task:'Write comprehensive API docs and README',hrs:'1.5h'},
-            {day:'Sun',topic:'Month 3 project complete',tags:['deploy','push'],task:'Deployed notes API live on the internet — push link to GitHub',hrs:'2h'},
-          ]}
-        ]
-      },
-      {
-        num: 4, title: 'Advanced backend + system design', color: '#38d9a9',
-        skills:['Redis','Message queues','WebSockets','System design','Microservices'],
-        weeks: [
-          { week:1, title:'Redis & caching', days:[
-            {day:'Mon',topic:'Redis intro',tags:['Redis','key-value','TTL'],task:'Set up Redis locally, cache API responses',hrs:'2h'},
-            {day:'Tue',topic:'Session management',tags:['sessions','cookies','Redis'],task:'Store user sessions in Redis',hrs:'2h'},
-            {day:'Wed',topic:'Background tasks',tags:['FastAPI BackgroundTasks','Celery intro'],task:'Send email in background after user signup',hrs:'2h'},
-            {day:'Thu',topic:'Celery + Redis',tags:['Celery','task queue','workers'],task:'Move background tasks to Celery worker',hrs:'2h'},
-            {day:'Fri',topic:'WebSockets',tags:['WebSocket','real-time','chat'],task:'Build a real-time chat endpoint using WebSockets',hrs:'2h'},
-            {day:'Sat',topic:'File uploads',tags:['multipart','S3 intro','static files'],task:'Add profile picture upload to user endpoint',hrs:'1.5h'},
-            {day:'Sun',topic:'Mini project',tags:['project'],task:'Real-time notification system using WebSockets + Redis',hrs:'2h'},
-          ]},
-          { week:2, title:'System design basics', days:[
-            {day:'Mon',topic:'Load balancing',tags:['Nginx','reverse proxy','load balance'],task:'Set up Nginx as reverse proxy for FastAPI',hrs:'2h'},
-            {day:'Tue',topic:'Horizontal scaling',tags:['scaling','stateless','sessions'],task:'Design a stateless API that scales horizontally',hrs:'2h'},
-            {day:'Wed',topic:'Database optimisation',tags:['indexes','query plan','EXPLAIN'],task:'Add indexes to slow queries, use EXPLAIN ANALYZE',hrs:'2h'},
-            {day:'Thu',topic:'API design patterns',tags:['versioning','pagination','HATEOAS'],task:'Refactor API with proper versioning (/api/v1/)',hrs:'1.5h'},
-            {day:'Fri',topic:'Microservices intro',tags:['monolith vs micro','service boundary'],task:'Design a split of notes app into 2 services on paper',hrs:'1.5h'},
-            {day:'Sat',topic:'12-factor app',tags:['config','logs','processes'],task:'Audit your app against the 12-factor principles',hrs:'1.5h'},
-            {day:'Sun',topic:'System design practice',tags:['design','interview prep'],task:'Design "URL shortener" system from scratch on paper',hrs:'2h'},
-          ]},
-          { week:3, title:'GraphQL & advanced patterns', days:[
-            {day:'Mon',topic:'GraphQL basics',tags:['GraphQL','Strawberry','schema'],task:'Add GraphQL endpoint using Strawberry',hrs:'2h'},
-            {day:'Tue',topic:'Queries & mutations',tags:['query','mutation','resolver'],task:'Migrate notes CRUD to GraphQL',hrs:'2h'},
-            {day:'Wed',topic:'Event-driven basics',tags:['events','pub/sub','decoupling'],task:'Implement a simple event bus in Python',hrs:'2h'},
-            {day:'Thu',topic:'Repository pattern',tags:['repository','clean arch','DI'],task:'Refactor DB layer using repository pattern',hrs:'2h'},
-            {day:'Fri',topic:'Dependency injection',tags:['DI','FastAPI Depends','testability'],task:'Inject services via FastAPI Depends',hrs:'1.5h'},
-            {day:'Sat',topic:'Performance profiling',tags:['cProfile','py-spy','bottlenecks'],task:'Profile API under load, find and fix top bottleneck',hrs:'2h'},
-            {day:'Sun',topic:'Revise + LeetCode',tags:['review','DB problems'],task:'Solve 2 LeetCode medium problems (DB/string)',hrs:'2h'},
-          ]},
-          { week:4, title:'Month 4 capstone project', days:[
-            {day:'Mon',topic:'Plan full-stack API',tags:['plan','scope','ERD'],task:'Plan a blog platform API: users, posts, comments, auth',hrs:'1.5h'},
-            {day:'Tue',topic:'Build: models & auth',tags:['models','JWT','relations'],task:'Set up all models and full JWT auth',hrs:'2h'},
-            {day:'Wed',topic:'Build: core endpoints',tags:['CRUD','nested resources'],task:'Build all CRUD endpoints with nested resources',hrs:'2h'},
-            {day:'Thu',topic:'Build: caching + background',tags:['Redis','Celery'],task:'Cache popular posts, send welcome email via Celery',hrs:'2h'},
-            {day:'Fri',topic:'Build: tests + CI',tags:['pytest','GitHub Actions'],task:'95% test coverage + CI pipeline',hrs:'2h'},
-            {day:'Sat',topic:'Deploy + docs',tags:['Docker','Render','OpenAPI'],task:'Deploy to cloud with Docker, write full docs',hrs:'2h'},
-            {day:'Sun',topic:'Reflect & journal',tags:['review','journal'],task:'Write journal entry: what you built, learned, struggled with',hrs:'1.5h'},
-          ]},
-        ]
-      }
-    ]
-  },
-  {
-    phase: 3, color: '#f9a825', label: 'Phase 3 — AI Layer',
-    duration: 'Month 5–6 · LLMs, RAG & production AI apps',
-    months: [
-      {
-        num: 5, title: 'LLMs & AI APIs', color: '#f9a825',
-        skills:['OpenAI API','Anthropic API','Prompt Engineering','LangChain','Embeddings'],
-        weeks: [
-          { week:1, title:'LLM APIs & prompting', days:[
-            {day:'Mon',topic:'OpenAI API basics',tags:['openai','chat completion','tokens'],task:'Build a CLI chatbot using OpenAI API',hrs:'2h'},
-            {day:'Tue',topic:'Anthropic API',tags:['claude','messages','system prompt'],task:'Build same chatbot using Claude API, compare outputs',hrs:'2h'},
-            {day:'Wed',topic:'Prompt engineering',tags:['few-shot','chain-of-thought','templates'],task:'Write 5 different system prompts for a code reviewer bot',hrs:'2h'},
-            {day:'Thu',topic:'Streaming responses',tags:['stream=True','SSE','real-time'],task:'Add streaming to your chatbot so text appears live',hrs:'1.5h'},
-            {day:'Fri',topic:'Function calling / tools',tags:['tools','function calling','JSON schema'],task:'Build an AI that can call a weather API tool',hrs:'2h'},
-            {day:'Sat',topic:'Token management',tags:['token counting','context window','truncation'],task:'Add smart context truncation to chatbot',hrs:'1.5h'},
-            {day:'Sun',topic:'Mini project',tags:['project'],task:'AI-powered code reviewer: paste code, get detailed feedback',hrs:'2h'},
-          ]},
-          { week:2, title:'Embeddings & vector search', days:[
-            {day:'Mon',topic:'Embeddings intro',tags:['text embeddings','semantic similarity'],task:'Compute similarity between 10 sentences using embeddings',hrs:'2h'},
-            {day:'Tue',topic:'ChromaDB',tags:['ChromaDB','vector store','collections'],task:'Store and query 100 documents in ChromaDB',hrs:'2h'},
-            {day:'Wed',topic:'Semantic search',tags:['cosine similarity','top-k','search'],task:'Build semantic search over a set of articles',hrs:'2h'},
-            {day:'Thu',topic:'RAG — basics',tags:['RAG','retrieval','augmented generation'],task:'Build basic RAG: retrieve relevant chunks, feed to LLM',hrs:'2h'},
-            {day:'Fri',topic:'PDF RAG',tags:['PyPDF2','chunking','overlap'],task:'Build a "chat with PDF" bot using RAG',hrs:'2h'},
-            {day:'Sat',topic:'Reranking',tags:['reranking','cross-encoder','relevance'],task:'Add reranking step to improve RAG quality',hrs:'1.5h'},
-            {day:'Sun',topic:'Revise + mini project',tags:['project'],task:'Personal knowledge base: drop in notes, ask questions',hrs:'2h'},
-          ]},
-          { week:3, title:'LangChain & agents', days:[
-            {day:'Mon',topic:'LangChain basics',tags:['LangChain','chains','prompts'],task:'Build a summarisation chain with LangChain',hrs:'2h'},
-            {day:'Tue',topic:'Memory & conversation',tags:['ConversationBufferMemory','history'],task:'Add memory to chatbot so it remembers context',hrs:'2h'},
-            {day:'Wed',topic:'LangChain tools',tags:['tools','DuckDuckGoSearch','agents'],task:'Build an agent that can search the web',hrs:'2h'},
-            {day:'Thu',topic:'ReAct agents',tags:['ReAct','reasoning','acting'],task:'Build a ReAct agent that reasons before acting',hrs:'2h'},
-            {day:'Fri',topic:'Multi-step chains',tags:['SequentialChain','pipeline'],task:'Build: research paper → summary → key points → quiz',hrs:'2h'},
-            {day:'Sat',topic:'Structured output',tags:['Pydantic output','JSON mode'],task:'Force LLM to return structured JSON using Pydantic',hrs:'1.5h'},
-            {day:'Sun',topic:'Mini project',tags:['project'],task:'AI research assistant: given a topic, search + summarise + quiz',hrs:'2h'},
-          ]},
-          { week:4, title:'Month 5 capstone', days:[
-            {day:'Mon',topic:'Plan AI-powered app',tags:['plan','RAG','backend'],task:'Plan: Resume analyser + job match finder using RAG',hrs:'1.5h'},
-            {day:'Tue',topic:'Build: file upload + parsing',tags:['PDF','text extract'],task:'Upload PDF resume, extract and chunk text',hrs:'2h'},
-            {day:'Wed',topic:'Build: embedding + store',tags:['embed','ChromaDB'],task:'Embed resume, store in vector DB',hrs:'2h'},
-            {day:'Thu',topic:'Build: AI analysis',tags:['LLM','structured output'],task:'LLM analyses resume, returns JSON of skills, gaps, score',hrs:'2h'},
-            {day:'Fri',topic:'Build: job matching',tags:['semantic search','job descriptions'],task:'Match resume to top 5 job descriptions by similarity',hrs:'2h'},
-            {day:'Sat',topic:'Deploy & polish',tags:['FastAPI','Docker','deploy'],task:'Wrap in FastAPI, Dockerise, deploy to cloud',hrs:'2h'},
-            {day:'Sun',topic:'Reflect & push',tags:['GitHub','journal'],task:'Push final project, write detailed journal entry',hrs:'1.5h'},
-          ]},
-        ]
-      },
-      {
-        num: 6, title: 'Production AI systems', color: '#f9a825',
-        skills:['Fine-tuning','LLMOps','Evaluation','Full-stack AI','Interview prep'],
-        weeks: [
-          { week:1, title:'Fine-tuning & eval', days:[
-            {day:'Mon',topic:'Fine-tuning concepts',tags:['fine-tune','LoRA','PEFT'],task:'Read OpenAI fine-tuning docs, understand dataset format',hrs:'2h'},
-            {day:'Tue',topic:'Fine-tune a small model',tags:['dataset prep','training','eval'],task:'Fine-tune GPT-3.5 on custom Q&A dataset',hrs:'2h'},
-            {day:'Wed',topic:'LLM evaluation',tags:['RAGAS','precision','recall'],task:'Evaluate your RAG system using RAGAS framework',hrs:'2h'},
-            {day:'Thu',topic:'Guardrails',tags:['guardrails','moderation','safety'],task:'Add input/output safety filters to your AI app',hrs:'1.5h'},
-            {day:'Fri',topic:'Observability',tags:['LangSmith','traces','monitoring'],task:'Add LangSmith tracing to monitor LLM calls',hrs:'2h'},
-            {day:'Sat',topic:'Cost optimisation',tags:['caching','model selection','batching'],task:'Add semantic caching to reduce API costs by 50%',hrs:'1.5h'},
-            {day:'Sun',topic:'Revise + portfolio update',tags:['GitHub','portfolio'],task:'Update all GitHub READMEs, add project demos',hrs:'2h'},
-          ]},
-          { week:2, title:'Full-stack AI app', days:[
-            {day:'Mon',topic:'Frontend basics',tags:['HTML','CSS','Fetch API'],task:'Build simple UI for your AI app (no framework)',hrs:'2h'},
-            {day:'Tue',topic:'Streamlit',tags:['Streamlit','rapid UI','AI apps'],task:'Build Streamlit UI for resume analyser',hrs:'2h'},
-            {day:'Wed',topic:'React basics (optional)',tags:['React','useState','fetch'],task:'Build a simple React chat UI for your chatbot',hrs:'2h'},
-            {day:'Thu',topic:'API integration',tags:['CORS','env vars','production'],task:'Connect React frontend to FastAPI backend',hrs:'2h'},
-            {day:'Fri',topic:'Deploy full-stack',tags:['Vercel','Render','prod'],task:'Deploy frontend on Vercel, backend on Render',hrs:'2h'},
-            {day:'Sat',topic:'Performance & monitoring',tags:['Sentry','uptime','logs'],task:'Add Sentry error tracking, set up uptime monitor',hrs:'1.5h'},
-            {day:'Sun',topic:'Demo-ready project',tags:['polish','demo'],task:'Record a 3-min demo video for portfolio',hrs:'2h'},
-          ]},
-          { week:3, title:'Interview preparation', days:[
-            {day:'Mon',topic:'Python interview Qs',tags:['OOP','decorators','async'],task:'Answer 20 common Python interview questions aloud',hrs:'2h'},
-            {day:'Tue',topic:'Backend interview Qs',tags:['REST','auth','DB','scaling'],task:'Answer 20 backend design interview questions',hrs:'2h'},
-            {day:'Wed',topic:'AI/ML interview Qs',tags:['RAG','embeddings','LLMs','eval'],task:'Answer 15 AI engineering interview questions',hrs:'2h'},
-            {day:'Thu',topic:'LeetCode practice',tags:['arrays','strings','hash maps'],task:'Solve 5 LeetCode easy/medium problems (timed)',hrs:'2h'},
-            {day:'Fri',topic:'System design mock',tags:['design','whiteboard','LLD'],task:'Design "WhatsApp" backend on paper, time yourself',hrs:'2h'},
-            {day:'Sat',topic:'Resume & LinkedIn',tags:['resume','LinkedIn','portfolio'],task:'Update resume with all 6 months of work and projects',hrs:'2h'},
-            {day:'Sun',topic:'Mock interview',tags:['mock','practice'],task:'Do a mock interview with a friend or record yourself',hrs:'2h'},
-          ]},
-          { week:4, title:'Final capstone + job search', days:[
-            {day:'Mon',topic:'Plan capstone',tags:['scope','plan','full-stack AI'],task:'Plan final project: a production-ready AI-powered SaaS',hrs:'2h'},
-            {day:'Tue',topic:'Build pt.1',tags:['backend','auth'],task:'Backend with auth, models, full CRUD',hrs:'2h'},
-            {day:'Wed',topic:'Build pt.2',tags:['AI features','RAG'],task:'AI layer: LLM + RAG + structured output',hrs:'2h'},
-            {day:'Thu',topic:'Build pt.3',tags:['frontend','deploy'],task:'Frontend + full deployment pipeline',hrs:'2h'},
-            {day:'Fri',topic:'Apply for jobs',tags:['applications','LinkedIn'],task:'Apply to 10 junior AI/Backend roles on LinkedIn',hrs:'2h'},
-            {day:'Sat',topic:'Portfolio final review',tags:['GitHub','portfolio'],task:'Final polish: 3 pinned GitHub projects, clean READMEs',hrs:'2h'},
-            {day:'Sun',topic:'Celebrate 🎉',tags:['reflect','journal'],task:'Write a final journal entry: where you started vs where you are',hrs:'2h'},
-          ]},
-        ]
-      }
-    ]
-  }
-];
-
-const RESOURCES = [
-  { phase:'Month 1–2', name:'CS50P — Introduction to Python', type:'Video course', free:true, url:'https://cs50.harvard.edu/python' },
-  { phase:'Month 1–2', name:'100 Days of Code: Python Bootcamp', type:'Video course', free:false, url:'https://www.udemy.com/course/100-days-of-code/' },
-  { phase:'Month 1–2', name:'SQLiteOnline.com', type:'Practice tool', free:true, url:'https://sqliteonline.com' },
-  { phase:'Month 1–2', name:'LeetCode (Easy problems)', type:'Practice platform', free:true, url:'https://leetcode.com' },
-  { phase:'Month 3–4', name:'FastAPI Official Docs', type:'Documentation', free:true, url:'https://fastapi.tiangolo.com' },
-  { phase:'Month 3–4', name:'Full Stack FastAPI — testdriven.io', type:'Tutorial', free:false, url:'https://testdriven.io/courses/tdd-fastapi/' },
-  { phase:'Month 3–4', name:'PostgreSQL Tutorial', type:'Tutorial', free:true, url:'https://www.postgresqltutorial.com' },
-  { phase:'Month 3–4', name:'Docker Getting Started', type:'Documentation', free:true, url:'https://docs.docker.com/get-started/' },
-  { phase:'Month 5–6', name:'DeepLearning.AI Short Courses', type:'Video course', free:true, url:'https://www.deeplearning.ai/short-courses/' },
-  { phase:'Month 5–6', name:'Anthropic API Docs', type:'Documentation', free:true, url:'https://docs.anthropic.com' },
-  { phase:'Month 5–6', name:'LangChain Docs', type:'Documentation', free:true, url:'https://python.langchain.com' },
-  { phase:'Month 5–6', name:'ChromaDB Docs', type:'Documentation', free:true, url:'https://docs.trychroma.com' },
-  { phase:'All', name:'freeCodeCamp YouTube', type:'Video channel', free:true, url:'https://youtube.com/@freecodecamp' },
-  { phase:'All', name:'GitHub Student Pack', type:'Free tools', free:true, url:'https://education.github.com/pack' },
-];
-
-// ===================== STATE =====================
-let state = {
-  entries: JSON.parse(localStorage.getItem('journal_entries') || '[]'),
-  streak: JSON.parse(localStorage.getItem('study_streak') || '[]'),
-  tasks: JSON.parse(localStorage.getItem('daily_tasks') || '{}'),
-  activeMood: '',
-  activePhase: 0,
-  activeMonth: 0,
-  activeWeek: 0,
-};
-
-function saveState() {
-  localStorage.setItem('journal_entries', JSON.stringify(state.entries));
-  localStorage.setItem('study_streak', JSON.stringify(state.streak));
-  localStorage.setItem('daily_tasks', JSON.stringify(state.tasks));
-}
-
-// ===================== NAVIGATION =====================
-function nav(page, el) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-' + page).classList.add('active');
-  if (el) el.classList.add('active');
-  if (page === 'journal') renderEntries();
-  if (page === 'streak') renderStreak();
-  if (page === 'schedule') renderSchedule();
-  if (page === 'roadmap') renderRoadmap();
-  if (page === 'resources') renderResources();
-}
-
-// ===================== DASHBOARD =====================
-function initDashboard() {
-  const now = new Date();
-  document.getElementById('dash-date').textContent =
-    now.toLocaleDateString('en-IN', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-
-  // Compute current day in roadmap
-  const startKey = localStorage.getItem('start_date');
-  let startDate = startKey ? new Date(startKey) : null;
-  if (!startDate) {
-    startDate = new Date();
-    startDate.setHours(0,0,0,0);
-    localStorage.setItem('start_date', startDate.toISOString());
-  }
-  const today = new Date(); today.setHours(0,0,0,0);
-  const dayNum = Math.max(0, Math.floor((today - startDate) / 86400000));
-  const totalDays = 180;
-  const pct = Math.min(100, Math.round(dayNum / totalDays * 100));
-
-  document.getElementById('overall-pct').textContent = pct + '%';
-  document.getElementById('overall-days').textContent = Math.min(dayNum, 180) + ' / 180 days';
-  document.getElementById('overall-bar').style.width = pct + '%';
-
-  // Phase
-  let phaseIdx = 0, phaseLabel = 'Phase 1', phaseName = 'Python Foundation';
-  if (dayNum >= 120) { phaseIdx = 2; phaseLabel = 'Phase 3'; phaseName = 'AI Layer'; }
-  else if (dayNum >= 60) { phaseIdx = 1; phaseLabel = 'Phase 2'; phaseName = 'Backend'; }
-  document.getElementById('stat-phase').textContent = phaseLabel;
-  document.getElementById('stat-phase-name').textContent = phaseName;
-
-  // Entries
-  document.getElementById('stat-entries').textContent = state.entries.length;
-
-  // Streak
-  const streak = calcStreak();
-  document.getElementById('stat-streak').textContent = streak;
-
-  // Today's task
-  const allDays = ROADMAP.flatMap(p => p.months.flatMap(m => m.weeks.flatMap(w => w.days)));
-  const todayIdx = Math.min(dayNum, allDays.length - 1);
-  const todayData = allDays[todayIdx];
-  const phaseData = ROADMAP[phaseIdx];
-  document.getElementById('today-topic').textContent = todayData.topic;
-  document.getElementById('today-meta').textContent =
-    phaseData.label + ' · ' + todayData.tags.join(', ') + ' · ' + todayData.hrs;
-
-  const taskKey = today.toISOString().split('T')[0];
-  const doneTasks = state.tasks[taskKey] || [];
-  const taskHtml = [
-    { text: '📖 Study: ' + todayData.tags.join(', ') },
-    { text: '✍️ Build: ' + todayData.task },
-    { text: '📓 Write a journal entry for today' },
-  ].map((t, i) => {
-    const done = doneTasks.includes(i);
-    return `<div class="task-item${done ? ' done' : ''}" onclick="toggleTask('${taskKey}',${i},this)">
-      <div class="task-cb">${done ? '✓' : ''}</div>
-      <div class="task-text">${t.text}</div>
-    </div>`;
-  }).join('');
-  document.getElementById('today-tasks').innerHTML = taskHtml;
-
-  // Phase overview
-  const phases = [
-    { label:'Phase 1 · Month 1–2', color:ROADMAP[0].color, sub:'Python & fundamentals', pct: Math.min(100, Math.max(0, Math.round(Math.min(dayNum, 60) / 60 * 100))) },
-    { label:'Phase 2 · Month 3–4', color:ROADMAP[1].color, sub:'Backend & databases', pct: Math.min(100, Math.max(0, Math.round((Math.min(dayNum, 120) - 60) / 60 * 100))) },
-    { label:'Phase 3 · Month 5–6', color:ROADMAP[2].color, sub:'AI & LLMs', pct: Math.min(100, Math.max(0, Math.round((Math.min(dayNum, 180) - 120) / 60 * 100))) },
-  ];
-  document.getElementById('phase-overview').innerHTML = phases.map(p => `
-    <div style="margin-bottom:14px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
-        <span style="font-size:13px;font-weight:500;">${p.label}</span>
-        <span style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;">${p.pct}%</span>
-      </div>
-      <div style="font-size:11px;color:var(--muted);margin-bottom:5px;">${p.sub}</div>
-      <div class="bar-bg"><div class="bar-fill" style="width:${p.pct}%;background:${p.color};"></div></div>
-    </div>
-  `).join('');
-}
-
-function toggleTask(key, idx, el) {
-  if (!state.tasks[key]) state.tasks[key] = [];
-  const i = state.tasks[key].indexOf(idx);
-  if (i === -1) { state.tasks[key].push(idx); el.classList.add('done'); el.querySelector('.task-cb').textContent = '✓'; }
-  else { state.tasks[key].splice(i, 1); el.classList.remove('done'); el.querySelector('.task-cb').textContent = ''; }
-  saveState();
-}
-
-// ===================== ROADMAP =====================
-function renderRoadmap() {
-  const html = ROADMAP.map(phase => `
-    <div class="card" style="border-left:2px solid ${phase.color};">
-      <div class="phase-header">
-        <div class="phase-dot" style="background:${phase.color}"></div>
-        <div class="phase-title">${phase.label}</div>
-        <div class="phase-dur">${phase.duration}</div>
-      </div>
-      <div class="month-grid">
-        ${phase.months.map(m => `
-          <div class="month-card" onclick="goToSchedule(${phase.phase-1},${m.num-1})">
-            <div class="mc-num">month ${m.num}</div>
-            <div class="mc-title">${m.title}</div>
-            <div class="mc-skills">
-              ${m.skills.map(s => `<span class="skill-tag" style="background:${phase.color}22;color:${phase.color};">${s}</span>`).join('')}
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    </div>
-  `).join('');
-  document.getElementById('roadmap-content').innerHTML = html;
-}
-
-function goToSchedule(phaseIdx, monthIdx) {
-  state.activePhase = phaseIdx;
-  state.activeMonth = monthIdx;
-  state.activeWeek = 0;
-  nav('schedule', document.querySelectorAll('.nav-item')[3]);
-}
-
-// ===================== SCHEDULE =====================
-function renderSchedule() {
-  // Phase tabs
-  const phaseTabs = ROADMAP.map((p, i) => `
-    <button class="wtab${state.activePhase === i ? ' active' : ''}" onclick="setPhase(${i})">${p.label.split(' — ')[0]}</button>
-  `).join('');
-  document.getElementById('phase-tabs').innerHTML = phaseTabs;
-
-  // Month tabs
-  const phase = ROADMAP[state.activePhase];
-  const monthTabs = phase.months.map((m, i) => {
-    const localIdx = state.activePhase * 2 + i;
-    return `<button class="wtab${state.activeMonth === localIdx ? ' active' : ''}" onclick="setMonth(${localIdx})">Month ${m.num}: ${m.title.split(' ')[0]}</button>`;
-  }).join('');
-  document.getElementById('month-tabs').innerHTML = monthTabs;
-
-  // Week tabs
-  const localMonthIdx = state.activeMonth - (state.activePhase * 2);
-  const month = phase.months[localMonthIdx] || phase.months[0];
-  const weekTabs = month.weeks.map((w, i) => `
-    <button class="wtab${state.activeWeek === i ? ' active' : ''}" onclick="setWeek(${i})">Week ${w.week}: ${w.title}</button>
-  `).join('');
-  document.getElementById('week-tabs').innerHTML = weekTabs;
-
-  // Days
-  const week = month.weeks[state.activeWeek];
-  const html = week.days.map((d, dayIdx) => `
-    <div class="day-card">
-      <div class="day-left">
-        <div class="day-name">${d.day}</div>
-      </div>
-      <div class="day-right">
-        <div style="display:flex;align-items:flex-start;gap:8px;">
-          <div class="day-topic">${d.topic}</div>
-          <div class="day-hrs" style="margin-left:auto;flex-shrink:0;">${d.hrs}</div>
-        </div>
-        <div class="day-tags">${d.tags.map(t => `<span class="dtag">${t}</span>`).join('')}</div>
-        <div class="day-task">→ ${d.task}</div>
-      </div>
-    </div>
-  `).join('');
-  document.getElementById('schedule-content').innerHTML = html;
-}
-
-function setPhase(i) { state.activePhase = i; state.activeMonth = i * 2; state.activeWeek = 0; renderSchedule(); }
-function setMonth(i) { state.activeMonth = i; state.activeWeek = 0; renderSchedule(); }
-function setWeek(i) { state.activeWeek = i; renderSchedule(); }
-
-// ===================== JOURNAL =====================
-function setMood(btn) {
-  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-  state.activeMood = btn.dataset.mood;
-}
-
-function saveEntry() {
-  const text = document.getElementById('journal-text').value.trim();
-  if (!text) { showToast('Write something first!', false); return; }
-  const entry = {
-    id: Date.now(),
-    date: document.getElementById('entry-date').value || new Date().toISOString().split('T')[0],
-    text,
-    mood: state.activeMood || '🙂',
-    topic: document.getElementById('entry-topic').value.trim(),
-    hours: parseFloat(document.getElementById('entry-hours').value) || 0,
-  };
-  state.entries.unshift(entry);
-  saveState();
-  clearEditor();
-  renderEntries();
-  updateStats();
-  showToast('Entry saved! ✓', true);
-}
-
-function clearEditor() {
-  document.getElementById('journal-text').value = '';
-  document.getElementById('entry-topic').value = '';
-  document.getElementById('entry-hours').value = '';
-  document.getElementById('entry-date').value = new Date().toISOString().split('T')[0];
-  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
-  state.activeMood = '';
-}
-
-function renderEntries() {
-  const q = document.getElementById('search-entries').value.toLowerCase();
-  const filtered = state.entries.filter(e =>
-    e.text.toLowerCase().includes(q) || (e.topic || '').toLowerCase().includes(q)
-  );
-  if (filtered.length === 0) {
-    document.getElementById('entries-list').innerHTML =
-      `<div style="text-align:center;color:var(--muted);padding:32px;font-family:'DM Mono',monospace;font-size:13px;">no entries yet — start writing!</div>`;
-    return;
-  }
-  document.getElementById('entries-list').innerHTML = filtered.map(e => `
-    <div class="entry-card" onclick="viewEntry(${e.id})">
-      <div class="ec-top">
-        <span class="ec-date">${e.date}</span>
-        <span class="ec-mood">${e.mood}</span>
-        ${e.topic ? `<span class="ec-topic">${e.topic}</span>` : ''}
-        ${e.hours ? `<span style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;">${e.hours}h</span>` : ''}
-        <button class="ec-del" onclick="deleteEntry(event,${e.id})">✕</button>
-      </div>
-      <div class="ec-preview">${e.text}</div>
-    </div>
-  `).join('');
-}
-
-function viewEntry(id) {
-  const e = state.entries.find(x => x.id === id);
-  if (!e) return;
-  document.getElementById('modal-title').textContent = e.date + ' ' + e.mood;
-  document.getElementById('modal-sub').textContent = (e.topic || 'no topic') + (e.hours ? ' · ' + e.hours + 'h studied' : '');
-  document.getElementById('modal-body').textContent = e.text;
-  document.getElementById('modal-del-btn').onclick = () => { deleteEntry(null, id); closeModal(); };
-  document.getElementById('modal').classList.add('open');
-}
-
-function deleteEntry(evt, id) {
-  if (evt) evt.stopPropagation();
-  state.entries = state.entries.filter(e => e.id !== id);
-  saveState();
-  renderEntries();
-  updateStats();
-  showToast('Entry deleted', false);
-}
-
-function closeModal(evt) {
-  if (!evt || evt.target === document.getElementById('modal')) {
-    document.getElementById('modal').classList.remove('open');
-  }
-}
-
-// ===================== RESOURCES =====================
-function renderResources() {
-  const groups = ['Month 1–2', 'Month 3–4', 'Month 5–6', 'All'];
-  const html = groups.map(g => {
-    const items = RESOURCES.filter(r => r.phase === g);
-    if (!items.length) return '';
-    return `
-      <div style="margin-bottom:20px;">
-        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.06em;">${g}</div>
-        <div class="res-grid">
-          ${items.map(r => `
-            <div class="res-card" style="cursor:pointer;" onclick="window.open('${r.url}','_blank')">
-              <div class="res-phase"><span class="badge ${r.free ? 'free' : 'paid'}">${r.free ? 'FREE' : 'PAID'}</span></div>
-              <div class="res-name">${r.name}</div>
-              <div class="res-type">${r.type} ↗</div>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    `;
-  }).join('');
-  document.getElementById('resources-content').innerHTML = html;
-}
-
-// ===================== STREAK =====================
-function renderStreak() {
-  const today = new Date(); today.setHours(0,0,0,0);
-  const days = [];
-  for (let i = 41; i >= 0; i--) {
-    const d = new Date(today); d.setDate(today.getDate() - i);
-    const key = d.toISOString().split('T')[0];
-    const isToday = i === 0;
-    const done = state.streak.includes(key);
-    days.push(`<div class="sg-day${done ? ' done' : ''}${isToday ? ' today' : ''}" title="${key}"></div>`);
-  }
-  document.getElementById('streak-grid').innerHTML = days.join('');
-  document.getElementById('streak-num').textContent = calcStreak();
-
-  const totalHrs = state.entries.reduce((s, e) => s + (e.hours || 0), 0);
-  document.getElementById('total-hours').textContent = totalHrs.toFixed(1) + 'h';
-}
-
-function markToday() {
-  const today = new Date().toISOString().split('T')[0];
-  if (!state.streak.includes(today)) {
-    state.streak.push(today);
-    saveState();
-    showToast('Day marked! Keep going 🔥', true);
-  } else {
-    showToast('Already marked for today!', false);
-  }
-  renderStreak();
-  updateStats();
-}
-
-function calcStreak() {
-  let streak = 0;
-  const today = new Date(); today.setHours(0,0,0,0);
-  for (let i = 0; i < 365; i++) {
-    const d = new Date(today); d.setDate(today.getDate() - i);
-    if (state.streak.includes(d.toISOString().split('T')[0])) streak++;
-    else if (i > 0) break;
-  }
-  return streak;
-}
-
-// ===================== UTILS =====================
-function updateStats() {
-  document.getElementById('stat-entries').textContent = state.entries.length;
-  document.getElementById('stat-streak').textContent = calcStreak();
-}
-
-function showToast(msg, success) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast' + (success ? ' green' : '') + ' show';
-  setTimeout(() => { t.className = 'toast'; }, 2500);
-}
-
-// ===================== INIT =====================
-document.getElementById('entry-date').value = new Date().toISOString().split('T')[0];
-initDashboard();
-</script>
-</body>
-</html>
+     
