@@ -1,4 +1,4 @@
-const CACHE = 'devpath-v1';
+const CACHE = 'devpath-v2';
 const ASSETS = [
   '/AI-Backend/',
   '/AI-Backend/index.html',
